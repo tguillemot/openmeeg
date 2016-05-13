@@ -84,6 +84,13 @@ if (matio_VERSION VERSION_LESS "1.5.0")
     message(FATAL_ERROR "OpenMEEG will not compile with matio versions less than 1.5.0.")
 endif()
 
+find_package(flens)
+
+if (NOT flens_FOUND)
+    message(FATAL_ERROR "No flens found.")
+endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWITH_GOTOBLAS")
+
 #---------------------------------------------------------------
 # Include OpenMEEG Directories
 #---------------------------------------------------------------
@@ -99,6 +106,7 @@ set(OPENMEEG_INCLUDE_DIRECTORIES
     ${OpenMEEG_BINARY_DIR}/libs/OpenMEEG/include
     ${OPENMEEG_OTHER_INCLUDE_DIRECTORIES}
     ${matio_INCLUDE_DIRS}
+    ${flens_INCLUDE_DIRS}
 )
 
 include_directories(${OPENMEEG_INCLUDE_DIRECTORIES})

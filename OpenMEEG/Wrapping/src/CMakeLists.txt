@@ -55,4 +55,7 @@ if (BUILD_TESTING)
     execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${OpenMEEG_SOURCE_DIR}/Wrapping/src/test_python.py ${OpenMEEG_BINARY_DIR}/Wrapping/src/)
     add_test(openmeeg_python
              ${PYTHON_EXECUTABLE} ${OpenMEEG_BINARY_DIR}/Wrapping/src/test_python.py --path ${OpenMEEG_SOURCE_DIR}/data)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E copy ${OpenMEEG_SOURCE_DIR}/Wrapping/src/python_failure.py ${OpenMEEG_BINARY_DIR}/Wrapping/src/)
+    add_test(openmeeg_python_xfail
+             ${PYTHON_EXECUTABLE} ${OpenMEEG_BINARY_DIR}/Wrapping/src/python_failure.py --path ${OpenMEEG_SOURCE_DIR}/data)
 endif()

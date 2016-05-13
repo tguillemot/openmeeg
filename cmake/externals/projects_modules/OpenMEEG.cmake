@@ -12,7 +12,7 @@ function(OpenMEEG_project)
     # Prepare the project and list dependencies
 
     EP_Initialisation(OpenMEEG BUILD_SHARED_LIBS ON)
-    EP_SetDependencies(${ep}_dependencies clapack matio ${MSINTTYPES})
+    EP_SetDependencies(${ep}_dependencies flens clapack matio ${MSINTTYPES})
 
     # No need to define repository where get the sources, since they are integrated.
 
@@ -22,6 +22,7 @@ function(OpenMEEG_project)
         set(${ep}_c_flags "${${ep}_c_flags} -w")
     endif()
 
+    message("::${flens_CMAKE_FLAGS}::")
     set(cmake_args
         ${ep_common_cache_args}
         ${ep_optional_args}
@@ -40,6 +41,7 @@ function(OpenMEEG_project)
         ${zlib_CMAKE_FLAGS}
         ${hdf5_CMAKE_FLAGS}
         ${matio_CMAKE_FLAGS}
+        ${flens_CMAKE_FLAGS}
     )
 
     # Check if patch has to be applied
