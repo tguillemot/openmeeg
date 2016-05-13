@@ -44,51 +44,56 @@
         #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
         #include <numpy/arrayobject.h>
 
-        static PyObject* asarray(OpenMEEG::Matrix* _mat) {
-            if (!_mat) {
+        static PyObject* asarray(OpenMEEG::Matrix* mat) {
+            if (!mat) {
                 PyErr_SetString(PyExc_RuntimeError, "Zero pointer passed instead of valid Matrix struct.");
                 return(NULL);
             }
 
-            /* array object */
+            // Array object
+
             PyArrayObject* matarray = 0;
 
-            /* Get the number of dimensions from the Matrix
-             */
+            // Get the number of dimensions from the Matrix
+
             npy_intp ar_dim[7], ndims;
             ndims = 2;
-            ar_dim[0] = _mat->nlin();
-            ar_dim[1] = _mat->ncol();
+            ar_dim[0] = mat->nlin();
+            ar_dim[1] = mat->ncol();
 
-            /* create numpy array */
-            matarray = (PyArrayObject*) PyArray_NewFromDescr(&PyArray_Type, PyArray_DescrFromType(NPY_DOUBLE), ndims, ar_dim, NULL, (void *) _mat->data(),NPY_ARRAY_FARRAY,NULL);
+            // Create numpy array
+
+            matarray = (PyArrayObject*) PyArray_NewFromDescr(&PyArray_Type, PyArray_DescrFromType(NPY_DOUBLE), ndims, ar_dim, NULL, (void *) mat->data_ref(),NPY_ARRAY_FARRAY,NULL);
 
             return PyArray_Return((PyArrayObject*) matarray);
         }
 
-        static PyObject* asarray(OpenMEEG::Vector* _vec) {
-            if (!_vec) {
+        static PyObject* asarray(OpenMEEG::Vector* vec) {
+            if (!vec) {
                 PyErr_SetString(PyExc_RuntimeError, "Zero pointer passed instead of valid Vector struct.");
                 return(NULL);
             }
 
-            /* array object */
+            // Array object
+
             PyArrayObject* matarray = 0;
 
-            /* Get the size of the Vector
-             */
+            // Get the size of the Vector
+
             npy_intp ar_dim[7], ndims;
             ndims = 1;
-            ar_dim[0] = _vec->size();
+            ar_dim[0] = vec->size();
 
-            /* create numpy array */
-            matarray = (PyArrayObject*) PyArray_NewFromDescr(&PyArray_Type, PyArray_DescrFromType(NPY_DOUBLE), ndims, ar_dim, NULL, (void *) _vec->data(),NPY_ARRAY_FARRAY,NULL);
+            // Create numpy array
+
+            matarray = (PyArrayObject*) PyArray_NewFromDescr(&PyArray_Type, PyArray_DescrFromType(NPY_DOUBLE), ndims, ar_dim, NULL, (void *) vec->data_ref(),NPY_ARRAY_FARRAY,NULL);
 
             return PyArray_Return ((PyArrayObject*) matarray);
         }
 
-        /* Create a Matrix from an array
-           how to assign elements, ex: A(1,2)=4. ? setvalue ? TODO */
+        // Create a Matrix from an array
+        //   how to assign elements, ex: A(1,2)=4. ? setvalue ? TODO */
+
         static OpenMEEG::Matrix fromarray(PyObject* mat) {
             if (!mat) {
                 PyErr_SetString(PyExc_RuntimeError, "Zero pointer passed instead of valid array.");
@@ -100,8 +105,10 @@
             const size_t nc = (PyArray_NDIM(matt)==2) ? PyArray_DIM(matt,1) : 1;
             OpenMEEG::Matrix omat(nl, nc);
             for (unsigned i = 0; i< nl; ++i)
-                for (unsigned j = 0; j< nc; ++j)
-                    omat(i,j)= static_cast<double*>(PyArray_DATA(matt))[i*PyArray_STRIDE(matt,0)+j*PyArray_STRIDE(matt,PyArray_NDIM(matt)-1)];
+                for (unsigned j = 0; j< nc; ++j) {
+                    std::cerr << omat(i,j) << ' ' << std::endl;
+                    omat(i,j) = static_cast<double*>(PyArray_DATA(matt))[i*PyArray_STRIDE(matt,0)+j*PyArray_STRIDE(matt,PyArray_NDIM(matt)-1)];
+                }
             return omat;
         }
         
@@ -160,6 +167,9 @@ namespace OpenMEEG {
     %typedef std::vector<OpenMEEG::Vertex *> PVertices;
     %typedef std::vector<OpenMEEG::Triangle> Triangles;
     %typedef std::vector<OpenMEEG::Mesh> Meshes;
+    //  Not sure this is useful.
+    %newobject Matrix::getcol(size_t) const;
+    %newobject Matrix::getlin(size_t) const;
 }
 
 %include <vect3.h>
@@ -228,6 +238,6 @@ instead we have a pointer to it:
 <Swig Object of type 'Interface *' at 0xa1e1590>
 */
 
-static PyObject* asarray(OpenMEEG::Matrix* _mat);
-static PyObject* asarray(OpenMEEG::Vector* _vec);
-static OpenMEEG::Matrix fromarray(PyObject* _mat);
+static PyObject* asarray(OpenMEEG::Matrix* mat);
+static PyObject* asarray(OpenMEEG::Vector* vec);
+static OpenMEEG::Matrix fromarray(PyObject* mat);
