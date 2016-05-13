@@ -56,13 +56,13 @@ namespace OpenMEEG {
         return *this;
     }
 
-    Matrix::Matrix(const SymMatrix& A): LinOp(A.nlin(),A.ncol(),FULL,2),value(new LinOpValue(size())) {
+    Matrix::Matrix(const SymMatrix& A): LinOp(A.nlin(),A.ncol(),FULL,2),value(size()) {
         for (size_t j=0; j<ncol();++j)
             for (size_t i=0; i<nlin();++i)
                 (*this)(i,j) = A(i,j);
     }
 
-    Matrix::Matrix(const SparseMatrix& A): LinOp(A.nlin(),A.ncol(),FULL,2),value(new LinOpValue(size())) {
+    Matrix::Matrix(const SparseMatrix& A): LinOp(A.nlin(),A.ncol(),FULL,2),value(size()) {
         this->set(0.);
         for(SparseMatrix::const_iterator it = A.begin(); it != A.end(); ++it) {
             (*this)(it->first.first,it->first.second) = it->second;

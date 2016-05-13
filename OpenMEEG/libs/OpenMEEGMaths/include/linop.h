@@ -41,9 +41,9 @@ knowledge of the CeCILL-B license and that you accept its terms.
 
 #include <cstdlib>
 
+#include <memory>
 #include "OpenMEEGMathsConfig.h"
 #include "om_utils.h"
-#include "RC.H"
 
 namespace OpenMEEG {
 
@@ -52,7 +52,6 @@ namespace OpenMEEG {
     }
 
     class OPENMEEGMATHS_EXPORT LinOpInfo {
-
     public:
 
         typedef maths::MathsIO* IO;
@@ -117,31 +116,46 @@ namespace OpenMEEG {
 
     typedef enum { DEEP_COPY } DeepCopy;
 
-    struct OPENMEEGMATHS_EXPORT LinOpValue: public utils::RCObject {
-        double *data;
+    struct OPENMEEGMATHS_EXPORT LinOpValue {
 
-        LinOpValue(): data(0) { }
+        LinOpValue(): data_ptr() { }
 
-        LinOpValue(const size_t n) {
-            try {
-                this->data = new double[n];
-            }
-            catch (std::bad_alloc&) {
-                std::cerr << "Error memory allocation failed... " << std::endl;
-                exit(1);
-            }
-        }
+        LinOpValue(const size_t n): data_ptr(new double[n],array_deleter<double>()) { }
 
-        LinOpValue(const size_t n,const double* initval) { init(n,initval); }
-        LinOpValue(const size_t n,const LinOpValue& v)   { init(n,v.data);  }
+        //  For deep copy
+
+        LinOpValue(const size_t n,const double* initval): LinOpValue(n) { init(n,initval); }
+        #if 0
+        LinOpValue(const size_t n,const LinOpValue& v)   { init(n,v.data_ptr);  }
+        #endif
+
+        //  For referencing.
+
+        LinOpValue(const size_t n,const LinOpValue& initval): data_ptr(initval.data_ptr.get(),no_deleter<double>()) { }
 
         void init(const size_t n,const double* initval) {
-            data = new double[n];
-            std::copy(initval,initval+n,data);
+            //data_ptr = new double[n];
+            std::copy(initval,initval+n,data_ptr.get());
         }
 
-        ~LinOpValue() { delete[] data; }
+        double* data() const { return data_ptr.get(); }
 
-        bool empty() const { return data==0; }
+        ~LinOpValue() { }
+
+        bool empty() const { return static_cast<bool>(data_ptr); }
+
+    private:
+
+        template <typename T>
+        struct no_deleter {
+            void operator()(const T* p) { }
+        };
+
+        template <typename T>
+        struct array_deleter {
+            void operator()(const T* p) { delete[] p; }
+        };
+
+        std::shared_ptr<double> data_ptr;
     };
 }

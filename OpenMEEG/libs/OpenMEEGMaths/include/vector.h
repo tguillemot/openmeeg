@@ -45,7 +45,6 @@ knowledge of the CeCILL-B license and that you accept its terms.
 
 #include <OpenMEEGMathsConfig.h>
 #include <linop.h>
-#include <RC.H>
 #include <MathsIO.H>
 
 namespace OpenMEEG {
@@ -55,35 +54,50 @@ namespace OpenMEEG {
 
     class OPENMEEGMATHS_EXPORT Vector: public LinOp {
 
-        utils::RCPtr<LinOpValue> value;
+        LinOpValue value;
 
     public:
 
         Vector(): LinOp(0,1,FULL,1),value() { }
 
-        Vector(const size_t N): LinOp(N,1,FULL,1),value(new LinOpValue(size())) { }
-        Vector(const Vector& A,const DeepCopy): LinOp(A.nlin(),1,FULL,1),value(new LinOpValue(A.size(),A.data())) { }
+        Vector(const size_t N): LinOp(N,1,FULL,1),value(size()) { }
+        Vector(const Vector& A,const DeepCopy): LinOp(A.nlin(),1,FULL,1),value(A.size(),A.data()) { }
+        //Vector(Vector&& V): LinOp(V.nlin(),1,FULL,1),value(V.value) { }
 
         explicit Vector(Matrix& A);
         explicit Vector(SymMatrix& A);
 
-        void alloc_data() { value = new LinOpValue(size()); }
-        void reference_data(const double* array) { value = new LinOpValue(size(),array); }
+        void alloc_data() { value = LinOpValue(size()); }
+        //  Hum, makes an unncessary copy...
+        void reference_data(const double* array) { value = LinOpValue(size(),array); }
 
         size_t size() const { return nlin(); }
 
-        bool empty() const { return value->empty(); }
+        bool empty() const { return value.empty(); }
 
-        double* data() const { return value->data; }
+        double* data() const { return value.data(); }
+
+        /// \brief Get a reference to vector data
+        /// \return pointer to vector values
+        /// Increase the reference count.
+        /// \sa
+
+        double* data_ref() const {
+            //value->addReference();
+            for (unsigned i=0;i<size();++i)
+                std::cerr << data()[i] << ' ';
+            std::cerr << std::endl;
+            return data();
+        }
 
         inline double operator()(const size_t i) const {
             om_assert(i<nlin());
-            return value->data[i];
+            return value.data()[i];
         }
 
         inline double& operator()(const size_t i) {
             om_assert(i<nlin());
-            return value->data[i];
+            return value.data()[i];
         }
 
         Vector subvect(size_t istart, size_t isize) const;
