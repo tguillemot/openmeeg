@@ -43,7 +43,7 @@ knowledge of the CeCILL-B license and that you accept its terms.
 /// \brief file containing the definition of a Domain.
 /// A domain is the association of a name and a vector of pairs.
 /// The first element of each pair corresponds to an interface.
-/// The second element of each pair states whether the domain is contains in the
+/// The second element of each pair states whether the domain is contained in the
 /// inside or the ouside of the volume bounded by the interface.
 
 #include <string>

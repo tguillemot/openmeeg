@@ -178,7 +178,7 @@ namespace OpenMEEG {
                     for ( Mesh::iterator tit = mit->begin(); tit != mit->end(); ++tit)
                         tit->index() = index++;
             } 
-            // even the last surface triangles (yes for EIT... )
+            // even the last surface triangles (yes for EIT, and for infinite_domain )
             nb_current_barrier_triangles()=0;
             for (iterator mit=begin(); mit!=end();++mit)
                 if(mit->current_barrier())

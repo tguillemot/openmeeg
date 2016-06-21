@@ -139,11 +139,12 @@ namespace OpenMEEG {
               double  funct_on_domains(const Mesh&, const Mesh&, const Function& ) const;
 
 
-    ///handle multiple 0 conductivity domains
+    // handle multiple 0 conductivity domains
+    // note: a mesh is invalid if it touches a zero-conductivity domain on both sides
     private:
-        std::set<Vertex>    invalid_vertices_; //does not equal to the vertices of invalid meshes because there are shared vertices
-        unsigned            nb_current_barrier_triangles_;   //number of triangles with 0 normal currnet. Including triangles of invalid meshes.
-        std::vector<std::vector<std::string> > geo_group_; //Mesh names that belong to different isolated groups.
+        std::set<Vertex>    invalid_vertices_; // not equal to the vertices of invalid meshes because there are shared vertices
+        unsigned            nb_current_barrier_triangles_;   // number of triangles with 0 normal currnet. Including triangles of invalid meshes.
+        std::vector<std::vector<std::string> > geo_group_; // Mesh names that belong to different isolated groups.
 
     public:
         const unsigned& nb_current_barrier_triangles() const { return nb_current_barrier_triangles_; }
