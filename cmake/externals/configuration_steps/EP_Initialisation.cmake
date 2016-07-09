@@ -77,5 +77,5 @@ macro(ep_Initialisation project BUILD_SHARED_LIBS build_shared_libs_def)
     endif()
 
     set(source_dir ${CMAKE_SOURCE_DIR}/${ep})
-    set(ep_dirs ${dirs} SOURCE_DIR ${source_dir})
+    set(ep_dirs SOURCE_DIR ${source_dir})
 endmacro()
