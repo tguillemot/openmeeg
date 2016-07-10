@@ -2,7 +2,7 @@
 #
 # Copyright (c) INRIA 2013-2016. All rights reserved.
 # See LICENSE.txt for details.
-# 
+#
 #  This software is distributed WITHOUT ANY WARRANTY; without even
 #  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 #  PURPOSE.
@@ -21,7 +21,9 @@ function(hdf5_project)
     # Define repository where get the sources
 
     if (NOT DEFINED ${ep}_SOURCE_DIR)
-        set(location GIT_REPOSITORY "${GIT_PREFIX}github.com/openmeeg/hdf5-matio.git")
+        #set(location GIT_REPOSITORY "${GIT_PREFIX}github.com/openmeeg/hdf5-matio.git")
+        set(location GIT_REPOSITORY "https://github.com/tguillemot/hdf5-matio")
+
         #set(location
         #    URL "http://www.hdfgroup.org/ftp/HDF5/releases/hdf5-1.8.12/src/hdf5-1.8.12.tar.bz2"
         #    URL_MD5 "03ad766d225f5e872eb3e5ce95524a08")
@@ -41,7 +43,7 @@ function(hdf5_project)
         -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
         -DCMAKE_C_FLAGS:STRING=${${ep}_c_flags}
         -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
-        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${${ep}_shared_linker_flags}  
+        -DCMAKE_SHARED_LINKER_FLAGS:STRING=${${ep}_shared_linker_flags}
         -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS_${ep}}
         -DHDF5_INSTALL_LIB_DIR:STRING=${INSTALL_LIB_DIR}
         -DBUILD_TESTING:BOOL=OFF
