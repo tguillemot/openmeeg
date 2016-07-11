@@ -55,8 +55,8 @@ macro(ep_Initialisation project BUILD_SHARED_LIBS build_shared_libs_def)
 
     # Define a directory for each target of the project
 
-    set(DIR_VAR_NAMES DOWNLOAD BINARY STAMP TMP INSTALL)
-    set(DIR_NAMES     ""       build  stamp tmp install)
+    set(DIR_VAR_NAMES SOURCE DOWNLOAD BINARY STAMP TMP INSTALL)
+    set(DIR_NAMES     src    ""       build  stamp tmp install)
 
     list(LENGTH DIR_VAR_NAMES dirnum)
     math(EXPR dirnum ${dirnum}-1)
@@ -76,10 +76,5 @@ macro(ep_Initialisation project BUILD_SHARED_LIBS build_shared_libs_def)
         set(${ep}_SOURCE_DIR SOURCE_DIR ${CMAKE_SOURCE_DIR}/${ep})
     endif()
 
-    set(source_dir ${CMAKE_SOURCE_DIR}/${ep})
-    if (NOT WIN32)
-        set(ep_dirs ${dirs} SOURCE_DIR ${source_dir})
-    else ()
-        set(ep_dirs SOURCE_DIR ${source_dir})
-    endif ()
+    set(ep_dirs ${dirs})
 endmacro()
