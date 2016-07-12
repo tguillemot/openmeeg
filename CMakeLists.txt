@@ -66,6 +66,6 @@ if (USE_LAPACK)
     option(CLAPACK_BUILD_TESTING "Build CLAPACK tests" OFF)
 endif()
 
-subprojects(${MSINTTYPES} ${LAPACK})
+subprojects(${MSINTTYPES} clapack)
 
 include(Packaging)
